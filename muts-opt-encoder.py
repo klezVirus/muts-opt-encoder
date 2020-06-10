@@ -186,9 +186,9 @@ class AddSubEncoder():
                             
                             _bytes = [ hex(_iter)[-2:] + _b for _iter, _b in zip([_j,_k,_m], _bytes) ]
                             # Detect overflow
-                            _bytes[2] = _bytes[2][:-2] + hex(int(_bytes[2][:2],16)-1)[-2:] if overflow else _bytes[2]
+                            _bytes[2] = _bytes[2][:-2] + hex(int(_bytes[2][:2],16) - 1)[-2:] if overflow else _bytes[2]
                             # Update overflow
-                            overflow = not (_sum == int(shellcode_byte, 16))
+                            overflow = overflow and not (len(hex(sum)) == 5 and int(hex(sum)[3:5], 16) == int(shellcode_byte, 16))
                             break
 
                 # Check if the end result is 8 bytes in length
@@ -297,13 +297,14 @@ class OptSubEncoder():
                     for j, k, m in self.binutils.matrix_3(self.charset):
                         _j, _k, _m, _sum = (ord(j), ord(k), ord(m), ord(j) + ord(k) + ord(m)) 
                         # Found a valid permutation?
-                        if (_sum == int(shellcode_byte, 16)) or (len(hex(_sum)) == 5 and int(hex(_sum)[3:5], 16) == int(shellcode_byte, 16) ):
+                        if (_sum == int(shellcode_byte, 16)) or (len(hex(_sum)) == 5 and int(hex(_sum)[3:5], 16) == int(shellcode_byte, 16)):
                             
                             _bytes = [ hex(_iter)[-2:] + _b for _iter, _b in zip([_j,_k,_m], _bytes) ]
                             # Detect overflow
                             _bytes[2] = _bytes[2][:-2] + hex(int(_bytes[2][:2],16)-1)[-2:] if overflow else _bytes[2]
                             # Update overflow
-                            overflow = not (_sum == int(shellcode_byte, 16))
+                            overflow = overflow and not (len(hex(sum)) == 5 and int(hex(sum)[3:5], 16) == int(shellcode_byte, 16))
+                            
                             break
 
                 # Check if the end result is 8 bytes in length
@@ -356,8 +357,8 @@ def main():
         '-a', '--append', help='Append NASM instructions in the log file', action="store_true")
     parser.add_argument(
         '-m', '--mode', help='Operational mode', default="opt-sub", choices=["add-sub", "opt-sub"])
-    group.add_argument(
-        '-o', '--output', type=str, default="encoder.nasm", help='Get input from stdin')
+    parser.add_argument(
+        '-o', '--output', type=str, default="encoder.nasm", help='Save output to file')
 
     args = parser.parse_args()
 
