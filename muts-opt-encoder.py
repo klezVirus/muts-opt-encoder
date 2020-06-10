@@ -188,7 +188,7 @@ class AddSubEncoder():
                             # Detect overflow
                             _bytes[2] = _bytes[2][:-2] + hex(int(_bytes[2][:2],16) - 1)[-2:] if overflow else _bytes[2]
                             # Update overflow
-                            overflow = overflow and not (len(hex(sum)) == 5 and int(hex(sum)[3:5], 16) == int(shellcode_byte, 16))
+                            overflow = overflow or not (len(hex(sum)) == 5 and int(hex(sum)[3:5], 16) == int(shellcode_byte, 16))
                             break
 
                 # Check if the end result is 8 bytes in length
@@ -303,7 +303,7 @@ class OptSubEncoder():
                             # Detect overflow
                             _bytes[2] = _bytes[2][:-2] + hex(int(_bytes[2][:2],16)-1)[-2:] if overflow else _bytes[2]
                             # Update overflow
-                            overflow = overflow and not (len(hex(sum)) == 5 and int(hex(sum)[3:5], 16) == int(shellcode_byte, 16))
+                            overflow = overflow or not (len(hex(sum)) == 5 and int(hex(sum)[3:5], 16) == int(shellcode_byte, 16))
                             
                             break
 
