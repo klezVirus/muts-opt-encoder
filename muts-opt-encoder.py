@@ -111,6 +111,17 @@ class AddSubEncoder():
     def print_footer(self):
         print("="+"="*(15*len(self.headers)) + "\n")
 
+    def fix_bytes(self, _bytes):
+        length = -len(_bytes)
+        if length == 0:
+            return _bytes
+        old_value = _bytes[length:length + 2]
+        if not old_value:
+            return _bytes
+        new_value = hex( int(old_value,16) -1 )[-2:]
+        return new_value + _bytes[length + 2:]   
+
+
     def encode(self, shellcode):
              
         with open(self.output, self.mode) as fout:
@@ -185,10 +196,13 @@ class AddSubEncoder():
                         if (_sum == int(shellcode_byte, 16)) or (len(hex(_sum)) == 5 and int(hex(_sum)[3:5], 16) == int(shellcode_byte, 16) ):
                             
                             _bytes = [ hex(_iter)[-2:] + _b for _iter, _b in zip([_j,_k,_m], _bytes) ]
+
                             # Detect overflow
-                            _bytes[2] = _bytes[2][:-2] + hex(int(_bytes[2][:2],16) - 1)[-2:] if overflow else _bytes[2]
+                            if overflow:
+                                _bytes[2] = self.fix_bytes(_bytes[2])
+
                             # Update overflow
-                            overflow = overflow or not (len(hex(sum)) == 5 and int(hex(sum)[3:5], 16) == int(shellcode_byte, 16))
+                            overflow = (len(hex(_sum)) == 5 and int(hex(_sum)[3:5], 16) == int(shellcode_byte, 16))
                             break
 
                 # Check if the end result is 8 bytes in length
@@ -219,6 +233,16 @@ class OptSubEncoder():
 
     def print_footer(self):
         print("="+"="*(15*len(self.headers)) + "\n")
+
+    def fix_bytes(self, _bytes):
+        length = -len(_bytes)
+        if length == 0:
+            return _bytes
+        old_value = _bytes[length:length + 2]
+        if not old_value:
+            return _bytes
+        new_value = hex( int(old_value,16) -1 )[-2:]
+        return new_value + _bytes[length + 2:]   
 
     def encode(self, shellcode):
              
@@ -300,11 +324,13 @@ class OptSubEncoder():
                         if (_sum == int(shellcode_byte, 16)) or (len(hex(_sum)) == 5 and int(hex(_sum)[3:5], 16) == int(shellcode_byte, 16)):
                             
                             _bytes = [ hex(_iter)[-2:] + _b for _iter, _b in zip([_j,_k,_m], _bytes) ]
+
                             # Detect overflow
-                            _bytes[2] = _bytes[2][:-2] + hex(int(_bytes[2][:2],16)-1)[-2:] if overflow else _bytes[2]
+                            if overflow:
+                                _bytes[2] = self.fix_bytes(_bytes[2])
+                                
                             # Update overflow
-                            overflow = overflow or not (len(hex(sum)) == 5 and int(hex(sum)[3:5], 16) == int(shellcode_byte, 16))
-                            
+                            overflow = (len(hex(_sum)) == 5 and int(hex(_sum)[3:5], 16) == int(shellcode_byte, 16))      
                             break
 
                 # Check if the end result is 8 bytes in length
