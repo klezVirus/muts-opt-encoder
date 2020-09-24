@@ -6,7 +6,7 @@ Pure python, self-contained, independent implementation of the `add_sub` encoder
 
 The script implements the same encoding scheme of add_sub and opt_sub msfvenom encoders, while mantaining a crucial difference:
 
-* By design, the script will generate only NASM commands, not shellcode. I created it as a mean to understand the encoding scheme. If you want a ready to use shellcode, `add_sub` and `opt_sub` from msfvenom are your friends.
+* By design, the script will generate only NASM instructions, not shellcode. I created it as a mean to understand the encoding scheme. If you want a ready to use shellcode, `add_sub` and `opt_sub` from msfvenom are your friends.
 
 The name, "Muts Optimised Encoder", is to remember the original author of this beautiful encoding scheme, Muts, who created it while developing the famous HP OpenView NNM 7.5.1 exploit, available [here](http://www.exploit-db.com/exploits/5342/).
 This encoding scheme is a piece of art in my opinion, as well as its 2 main implementations.
